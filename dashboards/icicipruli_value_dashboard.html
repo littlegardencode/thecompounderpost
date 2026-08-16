@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>ICICI Prudential Life — Value Investor's Ledger</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 <style>
   :root{
     --paper:#F5F1E6;
-    --paper-deep:#EDE7D6;
     --ink:#1B2A38;
     --ink-soft:#4B5A67;
     --gold:#A9792C;
@@ -25,12 +23,9 @@
   body{
     margin:0; background:var(--paper); color:var(--ink);
     font-family:var(--sans); line-height:1.5;
-    background-image:
-      linear-gradient(var(--paper) 0%, var(--paper) 100%);
   }
   .wrap{max-width:1120px; margin:0 auto; padding:0 24px 80px;}
 
-  /* ---------- Header ---------- */
   header.hero{
     background:
       radial-gradient(ellipse at top left, rgba(169,121,44,0.14), transparent 55%),
@@ -59,19 +54,11 @@
   .stat .k{font-size:10.5px; text-transform:uppercase; letter-spacing:.1em; color:#9FADB8; margin-bottom:4px;}
   .stat .v{font-family:var(--serif); font-size:21px; color:var(--paper); font-variant-numeric:tabular-nums;}
   .stat .v.pos{color:#8FCBA9;}
-  .stat .v.neg{color:#E3A08F;}
 
-  /* ---------- Sections ---------- */
   section{margin-top:46px;}
-  .sched-head{
-    display:flex; align-items:baseline; gap:14px; margin-bottom:4px;
-  }
-  .sched-num{
-    font-family:var(--serif); font-style:italic; color:var(--gold); font-size:14px; white-space:nowrap;
-  }
-  h2{
-    font-family:var(--serif); font-weight:400; font-size:25px; margin:0; color:var(--ink);
-  }
+  .sched-head{display:flex; align-items:baseline; gap:14px; margin-bottom:4px;}
+  .sched-num{font-family:var(--serif); font-style:italic; color:var(--gold); font-size:14px; white-space:nowrap;}
+  h2{font-family:var(--serif); font-weight:400; font-size:25px; margin:0; color:var(--ink);}
   .sched-rule{border:none; border-top:2px solid var(--ink); border-bottom:1px solid var(--ink); height:3px; margin:8px 0 20px;}
   p.lede{color:var(--ink-soft); font-size:14.5px; max-width:820px; margin:0 0 18px;}
 
@@ -79,86 +66,94 @@
   .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
   @media(max-width:820px){.grid2{grid-template-columns:1fr;} .grid3{grid-template-columns:1fr;}}
 
-  .card{
-    background:var(--card); border:1px solid var(--line); border-radius:3px;
-    padding:18px 20px;
-  }
-  .card h3{
-    font-family:var(--serif); font-weight:400; font-size:16.5px; margin:0 0 4px; color:var(--ink);
-  }
+  .card{background:var(--card); border:1px solid var(--line); border-radius:3px; padding:18px 20px;}
+  .card h3{font-family:var(--serif); font-weight:400; font-size:16.5px; margin:0 0 4px; color:var(--ink);}
   .card .cap{font-size:12px; color:var(--ink-soft); margin-bottom:10px;}
-  canvas{max-width:100%;}
+  .card svg{width:100%; height:auto; display:block;}
 
-  /* about / business */
+  /* donut (CSS conic-gradient, dependency-free) */
+  .donut-row{display:flex; align-items:center; gap:18px;}
+  .donut{
+    width:132px; height:132px; border-radius:50%; flex:none;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .donut::after{
+    content:""; width:70px; height:70px; border-radius:50%; background:var(--card);
+  }
+  .donut-legend{font-size:12px; flex:1;}
+  .donut-legend .row{display:flex; align-items:center; gap:7px; margin-bottom:6px;}
+  .donut-legend .sw{width:10px; height:10px; border-radius:2px; flex:none;}
+  .donut-legend .lbl{color:var(--ink-soft); flex:1;}
+  .donut-legend .pct{font-weight:700; color:var(--ink);}
+
   .about-grid{display:grid; grid-template-columns:1.3fr 1fr; gap:24px;}
   @media(max-width:820px){.about-grid{grid-template-columns:1fr;}}
-  .vision-box{
-    background:var(--ink); color:var(--paper); padding:20px 22px; border-radius:3px;
-    border-left:4px solid var(--gold);
-  }
+  .vision-box{background:var(--ink); color:var(--paper); padding:20px 22px; border-radius:3px; border-left:4px solid var(--gold);}
   .vision-box .k{font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-soft); margin-bottom:6px;}
   .vision-box p{font-family:var(--serif); font-size:17px; margin:0 0 14px; line-height:1.45;}
   .values-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;}
-  .chip{
-    font-size:11.5px; border:1px solid rgba(255,255,255,.3); padding:4px 10px; border-radius:20px; color:#DCE4E9;
-  }
+  .chip{font-size:11.5px; border:1px solid rgba(255,255,255,.3); padding:4px 10px; border-radius:20px; color:#DCE4E9;}
   ul.plain{margin:0; padding-left:18px; font-size:14px; color:var(--ink-soft);}
   ul.plain li{margin-bottom:6px;}
 
-  /* table */
   table.data{width:100%; border-collapse:collapse; font-size:13.2px;}
   table.data caption{text-align:left; font-family:var(--serif); font-size:15px; margin-bottom:8px;}
   table.data th, table.data td{padding:8px 10px; text-align:right; border-bottom:1px solid var(--line);}
   table.data th:first-child, table.data td:first-child{text-align:left;}
-  table.data thead th{
-    font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft);
-    border-bottom:2px solid var(--ink); font-weight:600;
-  }
+  table.data thead th{font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); border-bottom:2px solid var(--ink); font-weight:600;}
   table.data td{font-variant-numeric:tabular-nums;}
   table.data tbody tr:last-child td{border-bottom:none; font-weight:700; border-top:1px solid var(--ink);}
 
-  /* pros cons */
   .pc-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
   @media(max-width:820px){.pc-grid{grid-template-columns:1fr;}}
   .pc-col h3{font-family:var(--serif); font-size:19px; margin:0 0 14px; display:flex; align-items:center; gap:8px;}
-  .pc-item{
-    background:var(--card); border:1px solid var(--line); border-left:4px solid var(--green);
-    padding:12px 16px; border-radius:2px; margin-bottom:12px;
-  }
+  .pc-item{background:var(--card); border:1px solid var(--line); border-left:4px solid var(--green); padding:12px 16px; border-radius:2px; margin-bottom:12px;}
   .pc-item.con{border-left-color:var(--red);}
   .pc-item .h{font-weight:700; font-size:13.8px; margin-bottom:4px;}
   .pc-item .b{font-size:13px; color:var(--ink-soft);}
 
-  /* valuation */
   .val-band{position:relative; height:64px; margin:26px 0 10px;}
   .band-track{position:absolute; top:26px; left:0; right:0; height:14px; border-radius:8px; overflow:hidden; display:flex;}
   .seg{height:100%;}
   .seg.deep{background:#CFE3D6; flex:1.3;}
   .seg.fair{background:#EFE1B8; flex:1.5;}
   .seg.rich{background:#E7C6BC; flex:2;}
-  .band-marker{
-    position:absolute; top:0; width:2px; background:var(--ink); height:64px;
-  }
-  .band-marker .flag{
-    position:absolute; top:-4px; transform:translateX(-50%); left:1px;
-    background:var(--ink); color:var(--paper); font-size:11px; padding:3px 8px; border-radius:3px; white-space:nowrap;
-  }
+  .band-marker{position:absolute; top:0; width:2px; background:var(--ink); height:64px;}
+  .band-marker .flag{position:absolute; top:-4px; transform:translateX(-50%); left:1px; background:var(--ink); color:var(--paper); font-size:11px; padding:3px 8px; border-radius:3px; white-space:nowrap;}
   .band-labels{display:flex; justify-content:space-between; font-size:11px; color:var(--ink-soft); margin-top:4px;}
   .val-legend{display:flex; gap:18px; margin-top:14px; flex-wrap:wrap; font-size:12.5px;}
   .val-legend span{display:inline-flex; align-items:center; gap:6px;}
   .dot{width:10px; height:10px; border-radius:50%; display:inline-block;}
 
-  /* glossary */
   .gloss-grid{display:grid; grid-template-columns:1fr 1fr; gap:0 32px; font-size:13.5px;}
   @media(max-width:820px){.gloss-grid{grid-template-columns:1fr;}}
   .gterm{padding:10px 0; border-bottom:1px dashed var(--line);}
   .gterm b{color:var(--ink); font-family:var(--serif); font-size:14.5px;}
   .gterm span{color:var(--ink-soft); display:block; margin-top:2px;}
 
-  footer{
-    margin-top:56px; padding-top:20px; border-top:2px solid var(--ink);
-    font-size:11.5px; color:var(--ink-soft);
+  /* rating table (Fisher / Lynch) */
+  table.rate{width:100%; border-collapse:collapse; font-size:13px;}
+  table.rate thead th{
+    font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft);
+    border-bottom:2px solid var(--ink); text-align:left; padding:8px 10px; font-weight:600;
   }
+  table.rate td{padding:11px 10px; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.rate td.num{font-family:var(--serif); font-style:italic; color:var(--gold); width:26px;}
+  table.rate td.rule{width:230px; font-weight:600; color:var(--ink);}
+  table.rate td.rating{width:120px; white-space:nowrap;}
+  table.rate td.comment{color:var(--ink-soft);}
+  .badge{display:inline-block; font-size:11px; font-weight:700; padding:3px 9px; border-radius:12px;}
+  .badge.strong{background:var(--green-soft); color:var(--green);}
+  .badge.partial{background:#F3E9CC; color:#8A6414;}
+  .badge.weak{background:var(--red-soft); color:var(--red);}
+  .badge.na{background:#E7E4DA; color:var(--ink-soft);}
+  .verdict-box{
+    background:var(--ink); color:var(--paper); padding:18px 22px; border-radius:3px; margin-top:18px;
+    border-left:4px solid var(--gold); font-size:14px;
+  }
+  .verdict-box b{color:var(--gold-soft);}
+
+  footer{margin-top:56px; padding-top:20px; border-top:2px solid var(--ink); font-size:11.5px; color:var(--ink-soft);}
   .src-note{font-size:11.5px; color:var(--ink-soft); margin-top:6px;}
   .tag-pos{color:var(--green); font-weight:700;}
   .tag-neg{color:var(--red); font-weight:700;}
@@ -191,10 +186,34 @@
     <div class="about-grid">
       <div>
         <p class="lede" style="margin-bottom:14px;">ICICI Prudential Life sells life insurance, pensions, annuities and health riders to Indian households. It earns money two ways: an <b>underwriting margin</b> (premium collected minus claims paid and costs) and <b>investment income</b> on the ~₹31 lakh crore of policyholder and shareholder funds (its "float") that it manages until claims fall due. It commenced operations in FY2001 and today ranks among India's top private life insurers by sum assured.</p>
-        <h3 style="font-family:var(--serif); font-size:15px; margin-bottom:8px;">How FY2026 revenue is split (by APE)</h3>
+        <h3 style="font-family:var(--serif); font-size:15px; margin-bottom:8px;">How FY2026 business is split (by APE)</h3>
         <div class="grid2">
-          <div class="card"><div class="cap">Distribution mix — who sells the policy</div><canvas id="distChart" height="200"></canvas></div>
-          <div class="card"><div class="cap">Product mix — what gets sold</div><canvas id="prodChart" height="200"></canvas></div>
+          <div class="card">
+            <div class="cap">Distribution mix — who sells the policy</div>
+            <div class="donut-row">
+              <div class="donut" style="background:conic-gradient(#1B2A38 0% 29.8%, #A9792C 29.8% 55.1%, #3D6B52 55.1% 73.4%, #C79A4B 73.4% 86.6%, #C9D6DE 86.6% 100%);"></div>
+              <div class="donut-legend">
+                <div class="row"><span class="sw" style="background:#1B2A38"></span><span class="lbl">Bancassurance</span><span class="pct">29.8%</span></div>
+                <div class="row"><span class="sw" style="background:#A9792C"></span><span class="lbl">Agency</span><span class="pct">25.3%</span></div>
+                <div class="row"><span class="sw" style="background:#3D6B52"></span><span class="lbl">Direct</span><span class="pct">18.3%</span></div>
+                <div class="row"><span class="sw" style="background:#C79A4B"></span><span class="lbl">Partnership Distr.</span><span class="pct">13.2%</span></div>
+                <div class="row"><span class="sw" style="background:#C9D6DE"></span><span class="lbl">Group</span><span class="pct">13.4%</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="cap">Product mix — what gets sold</div>
+            <div class="donut-row">
+              <div class="donut" style="background:conic-gradient(#1B2A38 0% 48.0%, #A9792C 48.0% 68.5%, #3D6B52 68.5% 86.4%, #9C4A3A 86.4% 94.2%, #C9D6DE 94.2% 100%);"></div>
+              <div class="donut-legend">
+                <div class="row"><span class="sw" style="background:#1B2A38"></span><span class="lbl">Linked (ULIP)</span><span class="pct">48.0%</span></div>
+                <div class="row"><span class="sw" style="background:#A9792C"></span><span class="lbl">Non-Linked</span><span class="pct">20.5%</span></div>
+                <div class="row"><span class="sw" style="background:#3D6B52"></span><span class="lbl">Annuity</span><span class="pct">17.9%</span></div>
+                <div class="row"><span class="sw" style="background:#9C4A3A"></span><span class="lbl">Protection</span><span class="pct">7.8%</span></div>
+                <div class="row"><span class="sw" style="background:#C9D6DE"></span><span class="lbl">Group</span><span class="pct">5.8%</span></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div>
@@ -230,22 +249,190 @@
       <div class="card">
         <h3>Profit After Tax &amp; Net Worth</h3>
         <div class="cap">₹ Crore · PAT nearly doubled in the last two years alone</div>
-        <canvas id="patChart" height="220"></canvas>
+        <svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+<line x1="55" y1="260.0" x2="505" y2="260.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="263.0" font-size="10" fill="#4B5A67" text-anchor="end">0</text>
+<text x="513" y="263.0" font-size="10" fill="#1B2A38" text-anchor="start">0</text>
+<line x1="55" y1="202.5" x2="505" y2="202.5" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="205.5" font-size="10" fill="#4B5A67" text-anchor="end">500</text>
+<text x="513" y="205.5" font-size="10" fill="#1B2A38" text-anchor="start">5,000</text>
+<line x1="55" y1="145.0" x2="505" y2="145.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="148.0" font-size="10" fill="#4B5A67" text-anchor="end">1,000</text>
+<text x="513" y="148.0" font-size="10" fill="#1B2A38" text-anchor="start">10,000</text>
+<line x1="55" y1="87.5" x2="505" y2="87.5" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="90.5" font-size="10" fill="#4B5A67" text-anchor="end">1,500</text>
+<text x="513" y="90.5" font-size="10" fill="#1B2A38" text-anchor="start">15,000</text>
+<line x1="55" y1="30.0" x2="505" y2="30.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="33.0" font-size="10" fill="#4B5A67" text-anchor="end">2,000</text>
+<text x="513" y="33.0" font-size="10" fill="#1B2A38" text-anchor="start">20,000</text>
+<rect x="82.0" y="173.3" width="36.0" height="86.7" fill="#A9792C" rx="2"/>
+<text x="100.0" y="165.3" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">754</text>
+<text x="100.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY22</text>
+<rect x="172.0" y="166.7" width="36.0" height="93.3" fill="#A9792C" rx="2"/>
+<text x="190.0" y="158.7" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">811</text>
+<text x="190.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY23</text>
+<rect x="262.0" y="162.0" width="36.0" height="98.0" fill="#A9792C" rx="2"/>
+<text x="280.0" y="154.0" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">852</text>
+<text x="280.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY24</text>
+<rect x="352.0" y="123.3" width="36.0" height="136.7" fill="#A9792C" rx="2"/>
+<text x="370.0" y="115.3" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">1,189</text>
+<text x="370.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY25</text>
+<rect x="442.0" y="76.0" width="36.0" height="184.0" fill="#A9792C" rx="2"/>
+<text x="460.0" y="68.0" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">1,600</text>
+<text x="460.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY26</text>
+<polyline points="100.0,154.6 190.0,143.9 280.0,133.4 370.0,122.7 460.0,103.2" fill="none" stroke="#1B2A38" stroke-width="2.5"/>
+<circle cx="100.0" cy="154.6" r="4" fill="#1B2A38" stroke="white" stroke-width="1.5"/>
+<circle cx="190.0" cy="143.9" r="4" fill="#1B2A38" stroke="white" stroke-width="1.5"/>
+<circle cx="280.0" cy="133.4" r="4" fill="#1B2A38" stroke="white" stroke-width="1.5"/>
+<circle cx="370.0" cy="122.7" r="4" fill="#1B2A38" stroke="white" stroke-width="1.5"/>
+<circle cx="460.0" cy="103.2" r="4" fill="#1B2A38" stroke="white" stroke-width="1.5"/>
+<text x="100.0" y="144.6" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">9,163</text>
+<text x="190.0" y="133.9" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">10,092</text>
+<text x="280.0" y="123.4" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">11,009</text>
+<text x="370.0" y="138.7" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">11,941</text>
+<text x="460.0" y="119.2" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">13,631</text>
+<line x1="55" y1="260" x2="505" y2="260" stroke="#1B2A38" stroke-width="1.5"/>
+<rect x="55" y="6" width="10" height="10" fill="#A9792C"/>
+<text x="69" y="15" font-size="10.5" fill="#4B5A67">PAT (₹ Cr, left)</text>
+<line x1="185" y1="11" x2="195" y2="11" stroke="#1B2A38" stroke-width="2.5"/>
+<text x="199" y="15" font-size="10.5" fill="#4B5A67">Net Worth (₹ Cr, right)</text>
+</svg>
       </div>
       <div class="card">
-        <h3>Embedded Value &amp; Value of New Business</h3>
+        <h3>Embedded Value &amp; VNB Margin</h3>
         <div class="cap">₹ Billion (bars = EV, line = VNB margin %)</div>
-        <canvas id="evChart" height="220"></canvas>
+        <svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+<line x1="55" y1="260.0" x2="505" y2="260.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="263.0" font-size="10" fill="#4B5A67" text-anchor="end">0</text>
+<text x="513" y="263.0" font-size="10" fill="#9C4A3A" text-anchor="start">0.0%</text>
+<line x1="55" y1="202.5" x2="505" y2="202.5" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="205.5" font-size="10" fill="#4B5A67" text-anchor="end">200</text>
+<text x="513" y="205.5" font-size="10" fill="#9C4A3A" text-anchor="start">10.0%</text>
+<line x1="55" y1="145.0" x2="505" y2="145.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="148.0" font-size="10" fill="#4B5A67" text-anchor="end">400</text>
+<text x="513" y="148.0" font-size="10" fill="#9C4A3A" text-anchor="start">20.0%</text>
+<line x1="55" y1="87.5" x2="505" y2="87.5" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="90.5" font-size="10" fill="#4B5A67" text-anchor="end">600</text>
+<text x="513" y="90.5" font-size="10" fill="#9C4A3A" text-anchor="start">30.0%</text>
+<line x1="55" y1="30.0" x2="505" y2="30.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="33.0" font-size="10" fill="#4B5A67" text-anchor="end">800</text>
+<text x="513" y="33.0" font-size="10" fill="#9C4A3A" text-anchor="start">40.0%</text>
+<rect x="82.0" y="169.1" width="36.0" height="90.9" fill="#3D6B52" rx="2"/>
+<text x="100.0" y="161.1" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">316</text>
+<text x="100.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY22</text>
+<rect x="172.0" y="157.6" width="36.0" height="102.4" fill="#3D6B52" rx="2"/>
+<text x="190.0" y="149.6" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">356</text>
+<text x="190.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY23</text>
+<rect x="262.0" y="138.3" width="36.0" height="121.7" fill="#3D6B52" rx="2"/>
+<text x="280.0" y="130.3" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">423</text>
+<text x="280.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY24</text>
+<rect x="352.0" y="122.1" width="36.0" height="137.9" fill="#3D6B52" rx="2"/>
+<text x="370.0" y="114.1" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">480</text>
+<text x="370.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY25</text>
+<rect x="442.0" y="107.7" width="36.0" height="152.3" fill="#3D6B52" rx="2"/>
+<text x="460.0" y="99.7" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">530</text>
+<text x="460.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY26</text>
+<polyline points="100.0,99.0 190.0,76.0 280.0,118.6 370.0,128.9 460.0,118.0" fill="none" stroke="#9C4A3A" stroke-width="2.5"/>
+<circle cx="100.0" cy="99.0" r="4" fill="#9C4A3A" stroke="white" stroke-width="1.5"/>
+<circle cx="190.0" cy="76.0" r="4" fill="#9C4A3A" stroke="white" stroke-width="1.5"/>
+<circle cx="280.0" cy="118.6" r="4" fill="#9C4A3A" stroke="white" stroke-width="1.5"/>
+<circle cx="370.0" cy="128.9" r="4" fill="#9C4A3A" stroke="white" stroke-width="1.5"/>
+<circle cx="460.0" cy="118.0" r="4" fill="#9C4A3A" stroke="white" stroke-width="1.5"/>
+<text x="100.0" y="89.0" font-size="10" fill="#9C4A3A" text-anchor="middle" font-weight="600">28.0%</text>
+<text x="190.0" y="66.0" font-size="10" fill="#9C4A3A" text-anchor="middle" font-weight="600">32.0%</text>
+<text x="280.0" y="108.6" font-size="10" fill="#9C4A3A" text-anchor="middle" font-weight="600">24.6%</text>
+<text x="370.0" y="144.9" font-size="10" fill="#9C4A3A" text-anchor="middle" font-weight="600">22.8%</text>
+<text x="460.0" y="134.0" font-size="10" fill="#9C4A3A" text-anchor="middle" font-weight="600">24.7%</text>
+<line x1="55" y1="260" x2="505" y2="260" stroke="#1B2A38" stroke-width="1.5"/>
+<rect x="55" y="6" width="10" height="10" fill="#3D6B52"/>
+<text x="69" y="15" font-size="10.5" fill="#4B5A67">Embedded Value (₹ Bn, left)</text>
+<line x1="251" y1="11" x2="261" y2="11" stroke="#9C4A3A" stroke-width="2.5"/>
+<text x="265" y="15" font-size="10.5" fill="#4B5A67">VNB Margin % (right)</text>
+</svg>
       </div>
       <div class="card">
         <h3>Assets Under Management</h3>
         <div class="cap">₹ Trillion — the "float" the company invests on behalf of policyholders</div>
-        <canvas id="aumChart" height="220"></canvas>
+        <svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+<line x1="55" y1="260.0" x2="505" y2="260.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="263.0" font-size="10" fill="#4B5A67" text-anchor="end">0.00</text>
+<line x1="55" y1="200.0" x2="505" y2="200.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="203.0" font-size="10" fill="#4B5A67" text-anchor="end">1.00</text>
+<line x1="55" y1="140.0" x2="505" y2="140.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="143.0" font-size="10" fill="#4B5A67" text-anchor="end">2.00</text>
+<line x1="55" y1="80.0" x2="505" y2="80.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="83.0" font-size="10" fill="#4B5A67" text-anchor="end">3.00</text>
+<line x1="55" y1="20.0" x2="505" y2="20.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="23.0" font-size="10" fill="#4B5A67" text-anchor="end">4.00</text>
+<rect x="77.5" y="116.0" width="45.0" height="144.0" fill="#1B2A38" rx="2"/>
+<text x="100.0" y="110.0" font-size="10.5" fill="#1B2A38" text-anchor="middle" font-weight="600">2.40</text>
+<text x="100.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY22</text>
+<rect x="167.5" y="110.0" width="45.0" height="150.0" fill="#1B2A38" rx="2"/>
+<text x="190.0" y="104.0" font-size="10.5" fill="#1B2A38" text-anchor="middle" font-weight="600">2.50</text>
+<text x="190.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY23</text>
+<rect x="257.5" y="86.0" width="45.0" height="174.0" fill="#1B2A38" rx="2"/>
+<text x="280.0" y="80.0" font-size="10.5" fill="#1B2A38" text-anchor="middle" font-weight="600">2.90</text>
+<text x="280.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY24</text>
+<rect x="347.5" y="74.6" width="45.0" height="185.4" fill="#1B2A38" rx="2"/>
+<text x="370.0" y="68.6" font-size="10.5" fill="#1B2A38" text-anchor="middle" font-weight="600">3.09</text>
+<text x="370.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY25</text>
+<rect x="437.5" y="71.6" width="45.0" height="188.4" fill="#1B2A38" rx="2"/>
+<text x="460.0" y="65.6" font-size="10.5" fill="#1B2A38" text-anchor="middle" font-weight="600">3.14</text>
+<text x="460.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY26</text>
+<line x1="55" y1="260" x2="505" y2="260" stroke="#1B2A38" stroke-width="1.5"/>
+</svg>
       </div>
       <div class="card">
         <h3>EPS &amp; Dividend Per Share</h3>
         <div class="cap">₹ per share — dividend has grown ~3x since FY2022</div>
-        <canvas id="epsChart" height="220"></canvas>
+        <svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+<line x1="55" y1="260.0" x2="505" y2="260.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="263.0" font-size="10" fill="#4B5A67" text-anchor="end">0.00</text>
+<text x="513" y="263.0" font-size="10" fill="#9C4A3A" text-anchor="start">0.00</text>
+<line x1="55" y1="200.0" x2="505" y2="200.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="203.0" font-size="10" fill="#4B5A67" text-anchor="end">3.00</text>
+<text x="513" y="203.0" font-size="10" fill="#9C4A3A" text-anchor="start">3.00</text>
+<line x1="55" y1="140.0" x2="505" y2="140.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="143.0" font-size="10" fill="#4B5A67" text-anchor="end">6.00</text>
+<text x="513" y="143.0" font-size="10" fill="#9C4A3A" text-anchor="start">6.00</text>
+<line x1="55" y1="80.0" x2="505" y2="80.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="83.0" font-size="10" fill="#4B5A67" text-anchor="end">9.00</text>
+<text x="513" y="83.0" font-size="10" fill="#9C4A3A" text-anchor="start">9.00</text>
+<line x1="55" y1="20.0" x2="505" y2="20.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="23.0" font-size="10" fill="#4B5A67" text-anchor="end">12.00</text>
+<text x="513" y="23.0" font-size="10" fill="#9C4A3A" text-anchor="start">12.00</text>
+<rect x="81.1" y="155.0" width="37.8" height="105.0" fill="#A9792C" rx="2"/>
+<text x="100.0" y="149.0" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">5.25</text>
+<text x="100.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY22</text>
+<rect x="171.1" y="147.2" width="37.8" height="112.8" fill="#A9792C" rx="2"/>
+<text x="190.0" y="141.2" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">5.64</text>
+<text x="190.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY23</text>
+<rect x="261.1" y="141.6" width="37.8" height="118.4" fill="#A9792C" rx="2"/>
+<text x="280.0" y="135.6" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">5.92</text>
+<text x="280.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY24</text>
+<rect x="351.1" y="95.2" width="37.8" height="164.8" fill="#A9792C" rx="2"/>
+<text x="370.0" y="89.2" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">8.24</text>
+<text x="370.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY25</text>
+<rect x="441.1" y="38.8" width="37.8" height="221.2" fill="#A9792C" rx="2"/>
+<text x="460.0" y="32.8" font-size="10" fill="#1B2A38" text-anchor="middle" font-weight="600">11.06</text>
+<text x="460.0" y="278.0" font-size="11" fill="#4B5A67" text-anchor="middle">FY26</text>
+<polyline points="100.0,249.0 190.0,248.0 280.0,248.0 370.0,243.0 460.0,227.0" fill="none" stroke="#9C4A3A" stroke-width="2.5"/>
+<circle cx="100.0" cy="249.0" r="4" fill="#9C4A3A" stroke="white" stroke-width="1.5"/>
+<circle cx="190.0" cy="248.0" r="4" fill="#9C4A3A" stroke="white" stroke-width="1.5"/>
+<circle cx="280.0" cy="248.0" r="4" fill="#9C4A3A" stroke="white" stroke-width="1.5"/>
+<circle cx="370.0" cy="243.0" r="4" fill="#9C4A3A" stroke="white" stroke-width="1.5"/>
+<circle cx="460.0" cy="227.0" r="4" fill="#9C4A3A" stroke="white" stroke-width="1.5"/>
+<text x="100.0" y="239.0" font-size="10" fill="#9C4A3A" text-anchor="middle" font-weight="600">0.55</text>
+<text x="190.0" y="238.0" font-size="10" fill="#9C4A3A" text-anchor="middle" font-weight="600">0.60</text>
+<text x="280.0" y="238.0" font-size="10" fill="#9C4A3A" text-anchor="middle" font-weight="600">0.60</text>
+<text x="370.0" y="233.0" font-size="10" fill="#9C4A3A" text-anchor="middle" font-weight="600">0.85</text>
+<text x="460.0" y="217.0" font-size="10" fill="#9C4A3A" text-anchor="middle" font-weight="600">1.65</text>
+<line x1="55" y1="260" x2="505" y2="260" stroke="#1B2A38" stroke-width="1.5"/>
+<rect x="55" y="4" width="10" height="10" fill="#A9792C"/>
+<text x="69" y="13" font-size="10.5" fill="#4B5A67">EPS ₹ (left)</text>
+<line x1="161" y1="9" x2="171" y2="9" stroke="#9C4A3A" stroke-width="2.5"/>
+<text x="175" y="13" font-size="10.5" fill="#4B5A67">DPS ₹ (right)</text>
+</svg>
       </div>
     </div>
 
@@ -281,7 +468,43 @@
       <div class="card">
         <h3>FY2026 vs FY2025 cash flow (₹ Crore)</h3>
         <div class="cap">Standalone Receipts &amp; Payments Account</div>
-        <canvas id="cfChart" height="230"></canvas>
+        <svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+<line x1="55" y1="20.0" x2="505" y2="20.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="23.0" font-size="10" fill="#4B5A67" text-anchor="end">8,500</text>
+<line x1="55" y1="80.0" x2="505" y2="80.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="83.0" font-size="10" fill="#4B5A67" text-anchor="end">3,750</text>
+<line x1="55" y1="140.0" x2="505" y2="140.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="143.0" font-size="10" fill="#4B5A67" text-anchor="end">-1,000</text>
+<line x1="55" y1="200.0" x2="505" y2="200.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="203.0" font-size="10" fill="#4B5A67" text-anchor="end">-5,750</text>
+<line x1="55" y1="260.0" x2="505" y2="260.0" stroke="#D9D0B8" stroke-width="1"/>
+<text x="47" y="263.0" font-size="10" fill="#4B5A67" text-anchor="end">-10,500</text>
+<line x1="55" y1="127.4" x2="505" y2="127.4" stroke="#1B2A38" stroke-width="1.5"/>
+<rect x="71.9" y="127.4" width="36.0" height="118.7" fill="#E6D8B8" rx="2"/>
+<text x="89.9" y="258.1" font-size="9" fill="#1B2A38" text-anchor="middle">-9,400</text>
+<rect x="114.6" y="127.4" width="36.0" height="67.5" fill="#A9792C" rx="2"/>
+<text x="132.6" y="206.8" font-size="9" fill="#1B2A38" text-anchor="middle">-5,341</text>
+<text x="111.2" y="278.0" font-size="10.5" fill="#4B5A67" text-anchor="middle">Operating</text>
+<rect x="184.4" y="40.7" width="36.0" height="86.7" fill="#E6D8B8" rx="2"/>
+<text x="202.4" y="36.7" font-size="9" fill="#1B2A38" text-anchor="middle">6,861</text>
+<rect x="227.1" y="31.9" width="36.0" height="95.5" fill="#A9792C" rx="2"/>
+<text x="245.1" y="27.9" font-size="9" fill="#1B2A38" text-anchor="middle">7,557</text>
+<text x="223.8" y="278.0" font-size="10.5" fill="#4B5A67" text-anchor="middle">Investing</text>
+<rect x="296.9" y="109.4" width="36.0" height="18.0" fill="#E6D8B8" rx="2"/>
+<text x="314.9" y="105.4" font-size="9" fill="#1B2A38" text-anchor="middle">1,423</text>
+<rect x="339.6" y="127.4" width="36.0" height="2.2" fill="#A9792C" rx="2"/>
+<text x="357.6" y="141.5" font-size="9" fill="#1B2A38" text-anchor="middle">-171</text>
+<text x="336.2" y="278.0" font-size="10.5" fill="#4B5A67" text-anchor="middle">Financing</text>
+<rect x="409.4" y="127.4" width="36.0" height="14.1" fill="#E6D8B8" rx="2"/>
+<text x="427.4" y="153.5" font-size="9" fill="#1B2A38" text-anchor="middle">-1,116</text>
+<rect x="452.1" y="101.5" width="36.0" height="25.8" fill="#A9792C" rx="2"/>
+<text x="470.1" y="97.5" font-size="9" fill="#1B2A38" text-anchor="middle">2,046</text>
+<text x="448.8" y="278.0" font-size="10.5" fill="#4B5A67" text-anchor="middle">Net Change</text>
+<rect x="55" y="4" width="10" height="10" fill="#E6D8B8"/>
+<text x="69" y="13" font-size="10.5" fill="#4B5A67">FY2025</text>
+<rect x="129" y="4" width="10" height="10" fill="#A9792C"/>
+<text x="143" y="13" font-size="10.5" fill="#4B5A67">FY2026</text>
+</svg>
       </div>
       <div class="card">
         <h3>Reading an insurer's cash flow (don't panic at the negative)</h3>
@@ -432,9 +655,66 @@
     <p class="src-note">This is an educational valuation framework built from the company's own disclosed EV and market price, not investment advice — Claude is not a SEBI-registered advisor. Please do your own due diligence or consult a licensed financial advisor before investing.</p>
   </section>
 
-  <!-- SCHEDULE VII: GLOSSARY -->
+  <!-- SCHEDULE VII: PHILIP FISHER -->
   <section>
-    <div class="sched-head"><span class="sched-num">Schedule VII</span><h2>Glossary — Terms Used on This Page</h2></div>
+    <div class="sched-head"><span class="sched-num">Schedule VII</span><h2>Tested Against Philip Fisher's Growth-Investing Checklist</h2></div>
+    <hr class="sched-rule">
+    <p class="lede">Fisher (<i>Common Stocks and Uncommon Profits</i>, 1958) judged a "growth stock" on qualitative business strength as much as numbers. Below are his most cited points, rated against what the five annual reports actually show.</p>
+    <div class="card" style="overflow-x:auto;">
+      <table class="rate">
+        <thead><tr><th style="width:26px;">#</th><th style="width:230px;">Fisher's Question</th><th style="width:110px;">Rating</th><th>Comment, grounded in the reports</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td class="rule">Sizable, multi-year sales growth potential?</td><td class="rating"><span class="badge strong">Strong</span></td><td class="comment">Retail protection APE grew 32.3% YoY in FY2026 and India's life-insurance penetration remains low; management explicitly calls retail protection a "multi-decadal growth opportunity."</td></tr>
+          <tr><td class="num">2</td><td class="rule">Management keeps developing new growth beyond today's products?</td><td class="rating"><span class="badge strong">Strong</span></td><td class="comment">Active push into annuity/retirement products and credit-life/group-term segments alongside the traditional ULIP base — product mix has visibly shifted over five years (Schedule I donut charts).</td></tr>
+          <tr><td class="num">3</td><td class="rule">Effective R&amp;D relative to size?</td><td class="rating"><span class="badge na">Not applicable</span></td><td class="comment">Fisher's point targets manufacturing/tech R&amp;D. For an insurer the closer analogue is product innovation and analytics/AI investment in underwriting — both are called out in the FY2026 report, but not quantified in rupee terms.</td></tr>
+          <tr><td class="num">4</td><td class="rule">Above-average sales/distribution organisation?</td><td class="rating"><span class="badge strong">Strong</span></td><td class="comment">A genuinely differentiated bancassurance channel through ICICI Bank, plus 242,000+ agents and a growing direct/digital channel — few peers have this breadth.</td></tr>
+          <tr><td class="num">5</td><td class="rule">Worthwhile profit margin?</td><td class="rating"><span class="badge partial">Partial</span></td><td class="comment">VNB margin (the cleanest "new business" margin) sits at 24.7% in FY2026 — healthy, but down from a 32.0% peak in FY2023, so margin quality is good, not best-in-class-and-rising.</td></tr>
+          <tr><td class="num">6</td><td class="rule">Is management improving margins?</td><td class="rating"><span class="badge strong">Strong</span></td><td class="comment">Cost-to-premium for the savings line fell from 12.5% (FY2025) to 12.1% (FY2026) despite an adverse GST/input-tax-credit change — direct evidence of active cost discipline.</td></tr>
+          <tr><td class="num">7–9</td><td class="rule">Labour relations / executive relations / management depth?</td><td class="rating"><span class="badge na">Can't assess</span></td><td class="comment">Annual reports show low attrition messaging and a full leadership bios section, but these are self-reported and not independently verifiable from filings alone.</td></tr>
+          <tr><td class="num">10</td><td class="rule">Good cost analysis &amp; accounting controls?</td><td class="rating"><span class="badge strong">Strong</span></td><td class="comment">Five straight years of clean (unqualified) statutory audit opinions, detailed cost-ratio disclosure (cost/premium, cost/TWRP) every year, and no restatements found in the reports reviewed.</td></tr>
+          <tr><td class="num">11</td><td class="rule">Industry-specific edge over competitors?</td><td class="rating"><span class="badge strong">Strong</span></td><td class="comment">Zero non-performing assets in the investment book since inception (25 years, across market cycles) and a 99.3% claim settlement ratio are genuinely hard for smaller insurers to match.</td></tr>
+          <tr><td class="num">12</td><td class="rule">Long-range profit outlook over short-term optics?</td><td class="rating"><span class="badge strong">Strong</span></td><td class="comment">Company language consistently frames strategy around absolute VNB growth over multi-year horizons ("3C framework") rather than quarter-to-quarter premium chasing.</td></tr>
+          <tr><td class="num">13</td><td class="rule">Growth without excessive share dilution?</td><td class="rating"><span class="badge strong">Strong</span></td><td class="comment">Paid-up equity capital has risen only marginally (₹1,437 Cr → ₹1,449 Cr over 5 years, mostly ESOP-related) while EPS nearly doubled — growth is organic, not dilution-funded.</td></tr>
+          <tr><td class="num">14</td><td class="rule">Open communication in good times and bad?</td><td class="rating"><span class="badge partial">Partial</span></td><td class="comment">The FY2024 VNB margin decline and FY2026 GST cost headwind are both disclosed and explained in Management Discussion sections — a good sign — though as with most listed companies, tone stays promotional overall.</td></tr>
+          <tr><td class="num">15</td><td class="rule">Management of unquestionable integrity?</td><td class="rating"><span class="badge na">Can't assess</span></td><td class="comment">No red flags (auditor qualifications, related-party concerns, regulatory penalties) surfaced in five years of filings — but integrity is ultimately a qualitative judgment beyond what an annual report can prove.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="verdict-box">
+      <b>Fisher-style verdict:</b> ICICI Prudential Life scores well on distribution strength, cost discipline, and long-term orientation — the qualities Fisher weighted most heavily. Its weakest link on this checklist is margin trajectory (point 5): VNB margin has not yet reclaimed its FY2023 peak, so the "sizable and improving" bar is only partly met.
+    </div>
+  </section>
+
+  <!-- SCHEDULE VIII: PETER LYNCH -->
+  <section>
+    <div class="sched-head"><span class="sched-num">Schedule VIII</span><h2>Tested Against Peter Lynch's Rules</h2></div>
+    <hr class="sched-rule">
+    <p class="lede">Lynch (<i>One Up on Wall Street</i>, <i>Beating the Street</i>) favoured understandable businesses, reasonable growth-adjusted valuations, and clean balance sheets. Here's how ICICI Prudential Life stacks up.</p>
+    <div class="card" style="overflow-x:auto;">
+      <table class="rate">
+        <thead><tr><th style="width:26px;">#</th><th style="width:230px;">Lynch's Rule</th><th style="width:110px;">Rating</th><th>Comment, grounded in the reports</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td class="rule">Invest in what you understand</td><td class="rating"><span class="badge strong">Strong</span></td><td class="comment">Life insurance is conceptually simple: collect premium, invest it, pay claims. This dashboard's glossary aside, the business model needs no specialist expertise to follow.</td></tr>
+          <tr><td class="num">2</td><td class="rule">Categorise the stock (Lynch's six types)</td><td class="rating"><span class="badge partial">Stalwart</span></td><td class="comment">Not a "fast grower" (VNB CAGR only ~5%) nor a slow grower (PAT CAGR 20.7%) — best described as a Lynch "stalwart": a large, steady, moderately-fast compounder you hold for years, not a multi-bagger you flip.</td></tr>
+          <tr><td class="num">3</td><td class="rule">PEG ratio (P/E ÷ growth rate) reasonable?</td><td class="rating"><span class="badge partial">Partial</span></td><td class="comment">P/E ≈46x against a 5-yr EPS CAGR of ~20.5% gives a PEG of ≈2.2 — above Lynch's "PEG near 1 is fair" rule of thumb, though PEG is a poor fit for insurers since P/E itself is a weak metric here (see Schedule VI).</td></tr>
+          <tr><td class="num">4</td><td class="rule">Strong balance sheet, manageable debt</td><td class="rating"><span class="badge strong">Strong</span></td><td class="comment">227.3% solvency ratio (min. required 150%), zero NPA since inception, and the only debt on the book is a modest, freshly-termed ₹1,196 Cr subordinated debenture used to reinforce solvency — not to fund operations.</td></tr>
+          <tr><td class="num">5</td><td class="rule">Company has a defensible niche / moat</td><td class="rating"><span class="badge strong">Strong</span></td><td class="comment">Exclusive-feeling bancassurance access through ICICI Bank plus 25 years of brand trust and claims track record — a moat that's difficult and slow for a new entrant to replicate.</td></tr>
+          <tr><td class="num">6</td><td class="rule">Avoid "diworsification" into unrelated businesses</td><td class="rating"><span class="badge strong">Strong</span></td><td class="comment">The company stayed focused on its core life-insurance license; it even divested its pension-fund-management subsidiary to ICICI Bank in FY2026 rather than expanding into unrelated lines.</td></tr>
+          <tr><td class="num">7</td><td class="rule">Insider buying / management confidence</td><td class="rating"><span class="badge na">Not disclosed here</span></td><td class="comment">Annual reports show ESOP allotments (management being granted shares) but not open-market insider purchases — that data sits in exchange filings, not the annual report, so it isn't assessed on this page.</td></tr>
+          <tr><td class="num">8</td><td class="rule">Steady or growing dividend (a sign of confidence)</td><td class="rating"><span class="badge strong">Strong</span></td><td class="comment">DPS has risen every year bar one flat year, from ₹0.55 to ₹1.65 over five years — a 3x increase, while the payout ratio stayed conservative, leaving room for further increases.</td></tr>
+          <tr><td class="num">9</td><td class="rule">"Turn over the rocks" — do the unglamorous homework</td><td class="rating"><span class="badge strong">Strong</span></td><td class="comment">The company's own disclosures (cost ratios, persistency, solvency, VNB walk) are granular enough that a patient retail investor can actually verify claims year-on-year — an unusually transparent insurer by Indian standards.</td></tr>
+          <tr><td class="num">10</td><td class="rule">Avoid the "hot stock in a hot industry" trap</td><td class="rating"><span class="badge partial">Partial</span></td><td class="comment">Insurance is not a hyped sector today, which Lynch would like — but the stock did trade up to a euphoric ~2.9x EV multiple at its Oct-2024 high before correcting, showing it isn't immune to sentiment swings.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="verdict-box">
+      <b>Lynch-style verdict:</b> This fits Lynch's "stalwart" bucket well — understandable business, real moat, clean balance sheet, rising dividend. The one rule it doesn't cleanly satisfy is valuation-vs-growth (PEG): at today's price the stock isn't the bargain-relative-to-growth-rate Lynch preferred, even though it's cheaper than its own recent history.
+    </div>
+  </section>
+
+  <!-- SCHEDULE IX: GLOSSARY -->
+  <section>
+    <div class="sched-head"><span class="sched-num">Schedule IX</span><h2>Glossary — Terms Used on This Page</h2></div>
     <hr class="sched-rule">
     <div class="card">
       <div class="gloss-grid">
@@ -451,111 +731,20 @@
         <div class="gterm"><b>Non-Linked / Participating Business</b><span>Traditional policies with guaranteed or bonus-linked returns; the insurer, not the customer, manages the underlying investment risk.</span></div>
         <div class="gterm"><b>Net Worth</b><span>Shareholders' equity — paid-up capital plus reserves; the accounting "book value" of the company.</span></div>
         <div class="gterm"><b>P/E, P/B, P/EV Ratios</b><span>Price divided by Earnings, Book Value, or Embedded Value per share respectively — how many rupees you pay today for one rupee of that metric.</span></div>
+        <div class="gterm"><b>PEG Ratio</b><span>P/E ratio divided by the earnings growth rate. A rough Peter Lynch yardstick for whether a growth stock's price is reasonable relative to how fast it's growing.</span></div>
         <div class="gterm"><b>CAGR</b><span>Compound Annual Growth Rate — the smoothed, year-over-year growth rate that gets you from a starting value to an ending value over a number of years.</span></div>
         <div class="gterm"><b>Operating / Investing / Financing Cash Flow</b><span>The three buckets of the cash flow statement: cash from core business operations, cash used to buy/sell investments and assets, and cash from raising or repaying capital/debt.</span></div>
+        <div class="gterm"><b>Moat</b><span>A durable competitive advantage (brand, distribution, cost, network) that protects a company's profits from competitors — a term popularised by Warren Buffett.</span></div>
+        <div class="gterm"><b>Stalwart (Peter Lynch term)</b><span>A large, steady company growing earnings at a moderate, dependable pace — not explosive, not stagnant — typically held for years rather than traded.</span></div>
       </div>
     </div>
   </section>
 
   <footer>
     <p><b>Sources:</b> ICICI Prudential Life Insurance Company Ltd — Annual Reports FY2022, FY2023, FY2024, FY2025 and FY2026 (standalone financial statements, Directors'/Management Discussion sections, and Embedded Value disclosures); live market price and 52-week range from NSE/BSE-linked data providers, mid-August 2026.</p>
-    <p><b>Disclaimer:</b> This dashboard is prepared for educational purposes to help a beginner investor understand the business and its financial history. It is not a research report, recommendation, or investment advice. Figures are rounded and standalone (not consolidated) unless stated. Past growth does not guarantee future performance — always verify current numbers before investing and consider consulting a SEBI-registered investment advisor.</p>
+    <p><b>Disclaimer:</b> This dashboard is prepared for educational purposes to help a beginner investor understand the business and its financial history. It is not a research report, recommendation, or investment advice. The Fisher and Lynch "ratings" are Claude's qualitative interpretation of public disclosures against each investor's published philosophy, not an endorsement by either investor or their estates. Figures are rounded and standalone (not consolidated) unless stated. Past growth does not guarantee future performance — always verify current numbers before investing and consider consulting a SEBI-registered investment advisor.</p>
   </footer>
 
 </div>
-
-<script>
-Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
-Chart.defaults.color = '#4B5A67';
-Chart.defaults.font.size = 11.5;
-
-const inkGreen = '#3D6B52', inkGold = '#A9792C', inkRed = '#9C4A3A', inkNavy='#1B2A38', softGold='#E6D8B8', softGreen='#CFE0D6', softRed='#E7C6BC', softBlue='#C9D6DE';
-const years = ['FY22','FY23','FY24','FY25','FY26'];
-
-// Distribution mix donut (FY2026)
-new Chart(document.getElementById('distChart'), {
-  type:'doughnut',
-  data:{labels:['Bancassurance','Agency','Direct','Partnership Distr.','Group'],
-    datasets:[{data:[29.8,25.3,18.3,13.2,13.4], backgroundColor:[inkNavy,inkGold,inkGreen,softGold,softBlue]}]},
-  options:{plugins:{legend:{position:'bottom', labels:{boxWidth:10,padding:8}}}, cutout:'55%'}
-});
-
-// Product mix donut (FY2026)
-new Chart(document.getElementById('prodChart'), {
-  type:'doughnut',
-  data:{labels:['Linked (ULIP)','Non-Linked','Annuity','Protection','Group'],
-    datasets:[{data:[48.0,20.5,17.9,7.8,5.8], backgroundColor:[inkNavy,inkGold,inkGreen,inkRed,softBlue]}]},
-  options:{plugins:{legend:{position:'bottom', labels:{boxWidth:10,padding:8}}}, cutout:'55%'}
-});
-
-// PAT & Net worth
-new Chart(document.getElementById('patChart'), {
-  data:{labels:years,
-    datasets:[
-      {type:'bar', label:'PAT (₹ Cr)', data:[754,811,852,1189,1600], backgroundColor:inkGold, order:2, yAxisID:'y'},
-      {type:'line', label:'Net Worth (₹ Cr)', data:[9163,10092,11009,11941,13631], borderColor:inkNavy, backgroundColor:inkNavy, tension:.3, order:1, yAxisID:'y1', pointRadius:4}
-    ]},
-  options:{
-    scales:{
-      y:{position:'left', title:{display:true,text:'PAT ₹ Cr'}},
-      y1:{position:'right', grid:{drawOnChartArea:false}, title:{display:true,text:'Net Worth ₹ Cr'}}
-    },
-    plugins:{legend:{position:'bottom'}}
-  }
-});
-
-// EV & VNB margin
-new Chart(document.getElementById('evChart'), {
-  data:{labels:years,
-    datasets:[
-      {type:'bar', label:'Embedded Value (₹ Bn)', data:[316.25,356.34,423.37,479.51,529.89], backgroundColor:inkGreen, yAxisID:'y'},
-      {type:'line', label:'VNB Margin (%)', data:[28.0,32.0,24.6,22.8,24.7], borderColor:inkRed, backgroundColor:inkRed, tension:.3, yAxisID:'y1', pointRadius:4}
-    ]},
-  options:{
-    scales:{
-      y:{position:'left', title:{display:true,text:'EV ₹ Bn'}},
-      y1:{position:'right', grid:{drawOnChartArea:false}, title:{display:true,text:'VNB Margin %'}, min:0, max:40}
-    },
-    plugins:{legend:{position:'bottom'}}
-  }
-});
-
-// AUM
-new Chart(document.getElementById('aumChart'), {
-  type:'bar',
-  data:{labels:years, datasets:[{label:'AUM (₹ Trillion)', data:[2.40,2.50,2.90,3.09,3.14], backgroundColor:inkNavy}]},
-  options:{plugins:{legend:{display:false}}, scales:{y:{title:{display:true,text:'₹ Trillion'}}}}
-});
-
-// EPS & DPS
-new Chart(document.getElementById('epsChart'), {
-  data:{labels:years,
-    datasets:[
-      {type:'bar', label:'EPS (₹)', data:[5.25,5.64,5.92,8.24,11.06], backgroundColor:inkGold, yAxisID:'y'},
-      {type:'bar', label:'DPS (₹)', data:[0.55,0.60,0.60,0.85,1.65], backgroundColor:inkRed, yAxisID:'y1'}
-    ]},
-  options:{
-    scales:{
-      y:{position:'left', title:{display:true,text:'EPS ₹'}},
-      y1:{position:'right', grid:{drawOnChartArea:false}, title:{display:true,text:'DPS ₹'}, max:12}
-    },
-    plugins:{legend:{position:'bottom'}}
-  }
-});
-
-// Cash flow FY25 vs FY26
-new Chart(document.getElementById('cfChart'), {
-  type:'bar',
-  data:{labels:['Operating','Investing','Financing','Net Change'],
-    datasets:[
-      {label:'FY2025', data:[-9399.62,6861.31,1422.71,-1115.60], backgroundColor:softGold},
-      {label:'FY2026', data:[-5340.66,7557.37,-170.60,2046.15], backgroundColor:inkGold}
-    ]},
-  options:{
-    plugins:{legend:{position:'bottom'}},
-    scales:{y:{title:{display:true,text:'₹ Crore'}}}
-  }
-});
-</script>
 </body>
 </html>
