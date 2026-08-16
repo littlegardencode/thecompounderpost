@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ICICI Prudential Life — Value Investor's Ledger</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  :root{
+    --paper:#F5F1E6;
+    --paper-deep:#EDE7D6;
+    --ink:#1B2A38;
+    --ink-soft:#4B5A67;
+    --gold:#A9792C;
+    --gold-soft:#C79A4B;
+    --green:#3D6B52;
+    --green-soft:#E4EEE7;
+    --red:#9C4A3A;
+    --red-soft:#F3E5E0;
+    --card:#FFFDF7;
+    --line:#D9D0B8;
+    --serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--sans); line-height:1.5;
+    background-image:
+      linear-gradient(var(--paper) 0%, var(--paper) 100%);
+  }
+  .wrap{max-width:1120px; margin:0 auto; padding:0 24px 80px;}
+
+  /* ---------- Header ---------- */
+  header.hero{
+    background:
+      radial-gradient(ellipse at top left, rgba(169,121,44,0.14), transparent 55%),
+      var(--ink);
+    color:var(--paper);
+    padding:44px 24px 30px;
+    border-bottom:6px double var(--gold-soft);
+  }
+  .hero-inner{max-width:1120px; margin:0 auto;}
+  .eyebrow{
+    font-family:var(--sans); font-size:11.5px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--gold-soft); margin:0 0 10px;
+  }
+  h1.title{
+    font-family:var(--serif); font-weight:400; font-size:40px; margin:0 0 6px; letter-spacing:.2px;
+  }
+  .subtitle{font-size:15px; color:#C9D2D9; max-width:640px; margin:0 0 26px;}
+  .statline{
+    display:flex; flex-wrap:wrap; gap:0; border-top:1px solid rgba(255,255,255,.16);
+    border-bottom:1px solid rgba(255,255,255,.16);
+  }
+  .stat{
+    flex:1 1 150px; padding:14px 18px; border-right:1px solid rgba(255,255,255,.16);
+  }
+  .stat:last-child{border-right:none;}
+  .stat .k{font-size:10.5px; text-transform:uppercase; letter-spacing:.1em; color:#9FADB8; margin-bottom:4px;}
+  .stat .v{font-family:var(--serif); font-size:21px; color:var(--paper); font-variant-numeric:tabular-nums;}
+  .stat .v.pos{color:#8FCBA9;}
+  .stat .v.neg{color:#E3A08F;}
+
+  /* ---------- Sections ---------- */
+  section{margin-top:46px;}
+  .sched-head{
+    display:flex; align-items:baseline; gap:14px; margin-bottom:4px;
+  }
+  .sched-num{
+    font-family:var(--serif); font-style:italic; color:var(--gold); font-size:14px; white-space:nowrap;
+  }
+  h2{
+    font-family:var(--serif); font-weight:400; font-size:25px; margin:0; color:var(--ink);
+  }
+  .sched-rule{border:none; border-top:2px solid var(--ink); border-bottom:1px solid var(--ink); height:3px; margin:8px 0 20px;}
+  p.lede{color:var(--ink-soft); font-size:14.5px; max-width:820px; margin:0 0 18px;}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  @media(max-width:820px){.grid2{grid-template-columns:1fr;} .grid3{grid-template-columns:1fr;}}
+
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:3px;
+    padding:18px 20px;
+  }
+  .card h3{
+    font-family:var(--serif); font-weight:400; font-size:16.5px; margin:0 0 4px; color:var(--ink);
+  }
+  .card .cap{font-size:12px; color:var(--ink-soft); margin-bottom:10px;}
+  canvas{max-width:100%;}
+
+  /* about / business */
+  .about-grid{display:grid; grid-template-columns:1.3fr 1fr; gap:24px;}
+  @media(max-width:820px){.about-grid{grid-template-columns:1fr;}}
+  .vision-box{
+    background:var(--ink); color:var(--paper); padding:20px 22px; border-radius:3px;
+    border-left:4px solid var(--gold);
+  }
+  .vision-box .k{font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-soft); margin-bottom:6px;}
+  .vision-box p{font-family:var(--serif); font-size:17px; margin:0 0 14px; line-height:1.45;}
+  .values-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;}
+  .chip{
+    font-size:11.5px; border:1px solid rgba(255,255,255,.3); padding:4px 10px; border-radius:20px; color:#DCE4E9;
+  }
+  ul.plain{margin:0; padding-left:18px; font-size:14px; color:var(--ink-soft);}
+  ul.plain li{margin-bottom:6px;}
+
+  /* table */
+  table.data{width:100%; border-collapse:collapse; font-size:13.2px;}
+  table.data caption{text-align:left; font-family:var(--serif); font-size:15px; margin-bottom:8px;}
+  table.data th, table.data td{padding:8px 10px; text-align:right; border-bottom:1px solid var(--line);}
+  table.data th:first-child, table.data td:first-child{text-align:left;}
+  table.data thead th{
+    font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft);
+    border-bottom:2px solid var(--ink); font-weight:600;
+  }
+  table.data td{font-variant-numeric:tabular-nums;}
+  table.data tbody tr:last-child td{border-bottom:none; font-weight:700; border-top:1px solid var(--ink);}
+
+  /* pros cons */
+  .pc-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media(max-width:820px){.pc-grid{grid-template-columns:1fr;}}
+  .pc-col h3{font-family:var(--serif); font-size:19px; margin:0 0 14px; display:flex; align-items:center; gap:8px;}
+  .pc-item{
+    background:var(--card); border:1px solid var(--line); border-left:4px solid var(--green);
+    padding:12px 16px; border-radius:2px; margin-bottom:12px;
+  }
+  .pc-item.con{border-left-color:var(--red);}
+  .pc-item .h{font-weight:700; font-size:13.8px; margin-bottom:4px;}
+  .pc-item .b{font-size:13px; color:var(--ink-soft);}
+
+  /* valuation */
+  .val-band{position:relative; height:64px; margin:26px 0 10px;}
+  .band-track{position:absolute; top:26px; left:0; right:0; height:14px; border-radius:8px; overflow:hidden; display:flex;}
+  .seg{height:100%;}
+  .seg.deep{background:#CFE3D6; flex:1.3;}
+  .seg.fair{background:#EFE1B8; flex:1.5;}
+  .seg.rich{background:#E7C6BC; flex:2;}
+  .band-marker{
+    position:absolute; top:0; width:2px; background:var(--ink); height:64px;
+  }
+  .band-marker .flag{
+    position:absolute; top:-4px; transform:translateX(-50%); left:1px;
+    background:var(--ink); color:var(--paper); font-size:11px; padding:3px 8px; border-radius:3px; white-space:nowrap;
+  }
+  .band-labels{display:flex; justify-content:space-between; font-size:11px; color:var(--ink-soft); margin-top:4px;}
+  .val-legend{display:flex; gap:18px; margin-top:14px; flex-wrap:wrap; font-size:12.5px;}
+  .val-legend span{display:inline-flex; align-items:center; gap:6px;}
+  .dot{width:10px; height:10px; border-radius:50%; display:inline-block;}
+
+  /* glossary */
+  .gloss-grid{display:grid; grid-template-columns:1fr 1fr; gap:0 32px; font-size:13.5px;}
+  @media(max-width:820px){.gloss-grid{grid-template-columns:1fr;}}
+  .gterm{padding:10px 0; border-bottom:1px dashed var(--line);}
+  .gterm b{color:var(--ink); font-family:var(--serif); font-size:14.5px;}
+  .gterm span{color:var(--ink-soft); display:block; margin-top:2px;}
+
+  footer{
+    margin-top:56px; padding-top:20px; border-top:2px solid var(--ink);
+    font-size:11.5px; color:var(--ink-soft);
+  }
+  .src-note{font-size:11.5px; color:var(--ink-soft); margin-top:6px;}
+  .tag-pos{color:var(--green); font-weight:700;}
+  .tag-neg{color:var(--red); font-weight:700;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">Value Investor's Ledger · Compiled from FY2022–FY2026 Annual Reports</p>
+    <h1 class="title">ICICI Prudential Life Insurance</h1>
+    <p class="subtitle">NSE: ICICIPRULI · BSE: 540133 · India's first listed life insurer, 25 years in business, jointly promoted by ICICI Bank and (until its proposed FY2026 divestment) Prudential Corporation Holdings, UK.</p>
+    <div class="statline">
+      <div class="stat"><div class="k">Price (mid-Aug 2026)</div><div class="v">₹510</div></div>
+      <div class="stat"><div class="k">Market Cap</div><div class="v">≈ ₹73,900 Cr</div></div>
+      <div class="stat"><div class="k">52-Week Range</div><div class="v" style="font-size:16px">₹459.50 – ₹706.80</div></div>
+      <div class="stat"><div class="k">Price / Embedded Value</div><div class="v">≈ 1.4x</div></div>
+      <div class="stat"><div class="k">FY26 PAT Growth</div><div class="v pos">+34.6%</div></div>
+      <div class="stat"><div class="k">Solvency Ratio</div><div class="v pos">227.3%</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- SCHEDULE I: ABOUT -->
+  <section>
+    <div class="sched-head"><span class="sched-num">Schedule I</span><h2>The Business, in Plain Terms</h2></div>
+    <hr class="sched-rule">
+    <div class="about-grid">
+      <div>
+        <p class="lede" style="margin-bottom:14px;">ICICI Prudential Life sells life insurance, pensions, annuities and health riders to Indian households. It earns money two ways: an <b>underwriting margin</b> (premium collected minus claims paid and costs) and <b>investment income</b> on the ~₹31 lakh crore of policyholder and shareholder funds (its "float") that it manages until claims fall due. It commenced operations in FY2001 and today ranks among India's top private life insurers by sum assured.</p>
+        <h3 style="font-family:var(--serif); font-size:15px; margin-bottom:8px;">How FY2026 revenue is split (by APE)</h3>
+        <div class="grid2">
+          <div class="card"><div class="cap">Distribution mix — who sells the policy</div><canvas id="distChart" height="200"></canvas></div>
+          <div class="card"><div class="cap">Product mix — what gets sold</div><canvas id="prodChart" height="200"></canvas></div>
+        </div>
+      </div>
+      <div>
+        <div class="vision-box">
+          <div class="k">Vision</div>
+          <p>"To build an enduring institution that serves the protection and long-term saving needs of customers with sensitivity."</p>
+          <div class="k">Core Values</div>
+          <div class="values-row">
+            <span class="chip">Customer First</span><span class="chip">Humility</span>
+            <span class="chip">Passion</span><span class="chip">Integrity</span>
+            <span class="chip">Boundarylessness</span>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px;">
+          <h3>Why this matters for a value investor</h3>
+          <ul class="plain">
+            <li>Insurance is a <b>trust business</b> — the vision statement's emphasis on "sensitivity" lines up with a 25-year, zero-default investment record and a 99.3% claim settlement ratio.</li>
+            <li>Bancassurance (ICICI Bank branches) is the largest distribution leg — a durable, low-cost customer acquisition channel most standalone insurers don't have.</li>
+            <li>Product mix is shifting toward protection and annuity — segments IRDAI flags as structurally under-penetrated in India ("Insurance for All by 2047").</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCHEDULE II: FINANCIAL PERFORMANCE -->
+  <section>
+    <div class="sched-head"><span class="sched-num">Schedule II</span><h2>Five-Year Financial Performance</h2></div>
+    <hr class="sched-rule">
+    <p class="lede">All figures below are pulled directly from the "Summary of Financial Statements" schedule that appears in every annual report (standalone, ₹ figures converted to crore/billion for readability).</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Profit After Tax &amp; Net Worth</h3>
+        <div class="cap">₹ Crore · PAT nearly doubled in the last two years alone</div>
+        <canvas id="patChart" height="220"></canvas>
+      </div>
+      <div class="card">
+        <h3>Embedded Value &amp; Value of New Business</h3>
+        <div class="cap">₹ Billion (bars = EV, line = VNB margin %)</div>
+        <canvas id="evChart" height="220"></canvas>
+      </div>
+      <div class="card">
+        <h3>Assets Under Management</h3>
+        <div class="cap">₹ Trillion — the "float" the company invests on behalf of policyholders</div>
+        <canvas id="aumChart" height="220"></canvas>
+      </div>
+      <div class="card">
+        <h3>EPS &amp; Dividend Per Share</h3>
+        <div class="cap">₹ per share — dividend has grown ~3x since FY2022</div>
+        <canvas id="epsChart" height="220"></canvas>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px; overflow-x:auto;">
+      <table class="data">
+        <caption>Key figures at a glance</caption>
+        <thead>
+          <tr><th>Particulars</th><th>FY2022</th><th>FY2023</th><th>FY2024</th><th>FY2025</th><th>FY2026</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Gross Premium Income (₹ Cr)</td><td>37,458</td><td>39,933</td><td>43,236</td><td>48,951</td><td>53,125</td></tr>
+          <tr><td>Profit After Tax (₹ Cr)</td><td>754</td><td>811</td><td>852</td><td>1,189</td><td>1,600</td></tr>
+          <tr><td>Net Worth (₹ Cr)</td><td>9,163</td><td>10,092</td><td>11,009</td><td>11,941</td><td>13,631</td></tr>
+          <tr><td>Total Assets (₹ Cr)</td><td>2,39,190</td><td>2,50,159</td><td>2,93,527</td><td>3,08,847</td><td>3,12,725</td></tr>
+          <tr><td>Embedded Value (₹ Bn)</td><td>316.25</td><td>356.34</td><td>423.37</td><td>479.51</td><td>529.89</td></tr>
+          <tr><td>Value of New Business (₹ Bn)</td><td>21.63</td><td>27.65</td><td>22.27</td><td>23.70</td><td>26.29</td></tr>
+          <tr><td>VNB Margin</td><td>28.0%</td><td>32.0%</td><td>24.6%</td><td>22.8%</td><td>24.7%</td></tr>
+          <tr><td>Assets Under Mgmt (₹ Trn)</td><td>2.40</td><td>~2.50</td><td>~2.90</td><td>3.09</td><td>3.14</td></tr>
+          <tr><td>Solvency Ratio</td><td>204.5%</td><td>208.9%</td><td>191.8%</td><td>212.2%</td><td>227.3%</td></tr>
+          <tr><td>EPS (₹, basic)</td><td>5.25</td><td>5.64</td><td>5.92</td><td>8.24</td><td>11.06</td></tr>
+          <tr><td>Book Value / Share (₹)</td><td>63.75</td><td>70.15</td><td>76.42</td><td>82.62</td><td>94.05</td></tr>
+          <tr><td>Dividend / Share (₹)</td><td>0.55</td><td>0.60</td><td>0.60</td><td>0.85</td><td>1.65</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SCHEDULE III: CASH FLOW -->
+  <section>
+    <div class="sched-head"><span class="sched-num">Schedule III</span><h2>Cash Flow — Where the Money Actually Moved</h2></div>
+    <hr class="sched-rule">
+    <div class="grid2">
+      <div class="card">
+        <h3>FY2026 vs FY2025 cash flow (₹ Crore)</h3>
+        <div class="cap">Standalone Receipts &amp; Payments Account</div>
+        <canvas id="cfChart" height="230"></canvas>
+      </div>
+      <div class="card">
+        <h3>Reading an insurer's cash flow (don't panic at the negative)</h3>
+        <ul class="plain">
+          <li><b>Operating activities were cash-negative</b> in both years (−₹5,341 Cr FY26, −₹9,400 Cr FY25). For an insurer this is <b>normal, not a distress signal</b> — premium collected is classified as operating cash-in, but the moment that cash is deployed into government bonds and corporate debt to back policyholder liabilities, it shows up as an <b>investing</b> outflow instead.</li>
+          <li><b>Investing activities were strongly cash-positive</b> (+₹7,557 Cr FY26), driven by net proceeds from churning the ₹2.9+ lakh crore investment book and interest/dividend income of ≈₹11,973 Cr — a good proxy for the recurring "float income" of the business.</li>
+          <li><b>Financing activities were roughly neutral to slightly negative</b> in FY26 (−₹171 Cr) after the company repaid ₹1,200 Cr of older subordinated debt and re-raised ₹1,196 Cr of fresh sub-debt at 7.69% — a routine capital-structure refinancing, not distress borrowing.</li>
+          <li>Net result: cash &amp; equivalents <b>rose</b> from ₹7,878 Cr to ₹9,924 Cr over the year — the balance sheet is building, not burning, cash.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCHEDULE IV: GROWTH RATIOS -->
+  <section>
+    <div class="sched-head"><span class="sched-num">Schedule IV</span><h2>Growth, Measured as a Value Investor Would</h2></div>
+    <hr class="sched-rule">
+    <p class="lede">Compound Annual Growth Rate (CAGR) smooths out year-to-year noise to show the true underlying growth rate over the FY2022→FY2026 period (4 years).</p>
+    <div class="grid3">
+      <div class="card">
+        <h3>PAT CAGR — <span style="color:var(--green)">20.7%</span></h3>
+        <p class="cap" style="margin-bottom:0;">₹754 Cr → ₹1,600 Cr. Profit is compounding faster than premium (12.2% CAGR), meaning the business is getting <b>more efficient</b>, not just bigger — the single most important trend on this page.</p>
+      </div>
+      <div class="card">
+        <h3>EPS CAGR — <span style="color:var(--green)">20.5%</span></h3>
+        <p class="cap" style="margin-bottom:0;">₹5.25 → ₹11.06. Tracks PAT closely, meaning growth hasn't come from diluting shareholders with excess new share issuance.</p>
+      </div>
+      <div class="card">
+        <h3>Net Worth CAGR — <span style="color:var(--gold)">10.4%</span></h3>
+        <p class="cap" style="margin-bottom:0;">₹9,163 Cr → ₹13,631 Cr. Slower than PAT growth because the company pays out a growing dividend rather than retaining every rupee — reasonable for a mature, cash-generative insurer.</p>
+      </div>
+      <div class="card">
+        <h3>Embedded Value CAGR — <span style="color:var(--green)">13.8%</span></h3>
+        <p class="cap" style="margin-bottom:0;">₹316 Bn → ₹530 Bn. EV is the insurance industry's version of intrinsic book value (net worth + present value of future profit on in-force policies) — this is the number long-term insurance investors watch most closely.</p>
+      </div>
+      <div class="card">
+        <h3>VNB CAGR — <span style="color:var(--red)">5.0%</span></h3>
+        <p class="cap" style="margin-bottom:0;">₹21.6 Bn → ₹26.3 Bn, with a dip in FY2024. VNB is "profit on business signed this year" — it is lumpier because it moves with product mix and cost ratios, not a smooth compounder like PAT.</p>
+      </div>
+      <div class="card">
+        <h3>AUM CAGR — <span style="color:var(--gold)">6.9%</span></h3>
+        <p class="cap" style="margin-bottom:0;">₹2.40 Trn → ₹3.14 Trn. Slower AUM growth than PAT growth is actually healthy here — it shows profit growth is coming from margin discipline, not simply from a bigger pile of assets.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCHEDULE V: PROS & CONS -->
+  <section>
+    <div class="sched-head"><span class="sched-num">Schedule V</span><h2>Pros &amp; Cons — and Why They Matter</h2></div>
+    <hr class="sched-rule">
+    <div class="pc-grid">
+      <div class="pc-col">
+        <h3><span class="tag-pos">✓</span> Strengths</h3>
+        <div class="pc-item">
+          <div class="h">Profit growth is accelerating, not just continuing</div>
+          <div class="b">FY2026 PAT grew 34.6% YoY versus a 5-year CAGR of 20.7%. When the latest year beats the trend, it usually means recent cost-optimisation and mix-shift efforts are compounding — worth confirming this continues in FY2027 results before assuming it's structural.</div>
+        </div>
+        <div class="pc-item">
+          <div class="h">Fortress balance sheet, zero NPA since inception</div>
+          <div class="b">Solvency ratio of 227.3% is well above the regulatory minimum of 150%, and 94.5% of the fixed-income book sits in sovereign or AAA paper. For an insurer, this is the single best proxy for "will they be able to pay claims and survive a bad cycle" — the core of what value investors mean by margin of safety.</div>
+        </div>
+        <div class="pc-item">
+          <div class="h">Distribution moat via ICICI Bank</div>
+          <div class="b">Bancassurance is the largest distribution channel (~30% of APE). Bank-branch access is a durable, low customer-acquisition-cost channel that pure agency-led insurers cannot easily replicate.</div>
+        </div>
+        <div class="pc-item">
+          <div class="h">Best-in-class claims experience</div>
+          <div class="b">Individual claim settlement ratio has climbed from 97.8% (FY2022) to 99.3% (FY2026), with a 1.1-day average turnaround. This directly protects the brand — the product being sold is, ultimately, a promise.</div>
+        </div>
+        <div class="pc-item">
+          <div class="h">Rising, sustainable dividend</div>
+          <div class="b">Dividend per share has grown roughly 3x (₹0.55 → ₹1.65) over five years while the payout ratio stayed conservative (dividend well under 20% of PAT), leaving capital for growth and solvency buffers.</div>
+        </div>
+      </div>
+      <div class="pc-col">
+        <h3><span class="tag-neg">✗</span> Weaknesses / Risks</h3>
+        <div class="pc-item con">
+          <div class="h">VNB — the truest "new business quality" metric — has been lumpy</div>
+          <div class="b">VNB fell from ₹27.65 Bn (FY23) to ₹22.27 Bn (FY24) before recovering, and its 5-year CAGR of just 5% badly lags PAT growth. This means profit growth has partly come from the back-book (old policies) and cost control rather than purely writing more profitable new business.</div>
+        </div>
+        <div class="pc-item con">
+          <div class="h">A meaningful slice of "income" is market-driven, not core underwriting</div>
+          <div class="b">Net investment income swung from ₹9,910 Cr (FY23) to ₹46,598 Cr (FY24) to ₹10,881 Cr (FY26) — largely mark-to-market gains/losses passed through to policyholders. A new investor should look past headline "total income" swings and focus on PAT, VNB and EV instead.</div>
+        </div>
+        <div class="pc-item con">
+          <div class="h">Ownership overhang from Prudential Corp's stake sale</div>
+          <div class="b">In May 2026, Prudential Corporation Holdings (UK) proposed divesting its 21.89% stake, pending regulatory approval. Large stake sales can pressure the stock price in the near term and raise questions about the long-term shareholding structure, even though ICICI Bank remains the majority owner.</div>
+        </div>
+        <div class="pc-item con">
+          <div class="h">Not statistically "cheap" on absolute earnings multiples</div>
+          <div class="b">Trailing P/E is ≈46x and P/B is ≈5.4x — high by general-market value-investing yardsticks. Insurers are properly valued on Price/Embedded Value instead (currently ≈1.4x, discussed in Schedule VI), but a newcomer should not screen this stock using a plain P/E filter.</div>
+        </div>
+        <div class="pc-item con">
+          <div class="h">Regulatory and tax changes move margins directly</div>
+          <div class="b">The September 2025 GST reform reduced input-tax-credit availability and pushed up effective costs even as it helped affordability for customers; cost-to-premium held flat at 18.2% only because of offsetting efficiency gains. Insurance margins are structurally exposed to rule changes outside management's control.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCHEDULE VI: VALUATION -->
+  <section>
+    <div class="sched-head"><span class="sched-num">Schedule VI</span><h2>What Price Makes Sense for a Long-Term, Buy-and-Hold Investor?</h2></div>
+    <hr class="sched-rule">
+    <p class="lede">Life insurers are not valued on plain P/E — earnings are lumpy and partly non-cash. The industry standard is <b>Price / Embedded Value (P/EV)</b>: EV already captures net worth plus the discounted value of profit locked into existing policies, so P/EV tells you how much you're paying for growth <i>beyond</i> that.</p>
+
+    <div class="card">
+      <h3>Where today's price sits on the P/EV spectrum</h3>
+      <div class="val-band">
+        <div class="band-track">
+          <div class="seg deep"></div><div class="seg fair"></div><div class="seg rich"></div>
+        </div>
+        <div class="band-marker" style="left:38%;">
+          <div class="flag">Today ≈ ₹510 (1.4x EV)</div>
+        </div>
+      </div>
+      <div class="band-labels">
+        <span>&lt; 1.3x EV (≈ &lt;₹475)</span>
+        <span>1.3x – 1.8x EV (≈ ₹475–₹660)</span>
+        <span>&gt; 2x EV (≈ &gt;₹730, seen at Oct 2024 all-time high of ₹795)</span>
+      </div>
+      <div class="val-legend">
+        <span><span class="dot" style="background:#8FBFA0"></span>Deep value zone</span>
+        <span><span class="dot" style="background:#D9C078"></span>Fair value zone</span>
+        <span><span class="dot" style="background:#D0958A"></span>Richly valued zone</span>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:20px;">
+      <div class="card">
+        <h3>The arithmetic</h3>
+        <ul class="plain">
+          <li>FY2026 Embedded Value: <b>₹529.89 Bn</b> ÷ ≈144.9 Cr shares ≈ <b>₹366 EV/share</b></li>
+          <li>At ₹510/share, that's <b>≈1.39x EV</b> — below the ~2x–2.9x multiple the market paid at the FY2024–25 highs (₹680–₹795), but above the sub-1x levels seen in broad market sell-offs.</li>
+          <li>The stock is down ≈28% from its ₹795 all-time high (Oct 2024) to its 52-week low of ₹459.50 (Apr 2025) — the current price is roughly midway through that range.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>A simple, disciplined approach for a first-time value investor</h3>
+        <ul class="plain">
+          <li><b>Buy zone:</b> Historically, entries at or below ~1.3x–1.5x EV (roughly ₹475–₹550 today) have offered a reasonable margin of safety relative to the company's own 5-year valuation history.</li>
+          <li><b>Watch, don't chase, above ~1.8x–2x EV</b> (≈₹660–₹730) — that band has coincided with subsequent multi-quarter corrections in this stock.</li>
+          <li>Because you plan to hold long-term, consider buying in tranches (SIP-style) across a few quarters rather than timing a single entry — this reduces the risk of buying right before a short-term dip.</li>
+          <li>Re-check EV and VNB margin every year at annual-report time (usually April–June) — rising VNB margin with stable-to-rising EV growth is the health check that matters most for this business.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="src-note">This is an educational valuation framework built from the company's own disclosed EV and market price, not investment advice — Claude is not a SEBI-registered advisor. Please do your own due diligence or consult a licensed financial advisor before investing.</p>
+  </section>
+
+  <!-- SCHEDULE VII: GLOSSARY -->
+  <section>
+    <div class="sched-head"><span class="sched-num">Schedule VII</span><h2>Glossary — Terms Used on This Page</h2></div>
+    <hr class="sched-rule">
+    <div class="card">
+      <div class="gloss-grid">
+        <div class="gterm"><b>Embedded Value (EV)</b><span>Net worth of the company plus the discounted present value of profit expected from policies already sold. The insurance industry's version of "intrinsic book value."</span></div>
+        <div class="gterm"><b>Value of New Business (VNB)</b><span>The profit (in present-value terms) the company expects to earn from all the new policies it sold this year alone.</span></div>
+        <div class="gterm"><b>VNB Margin</b><span>VNB ÷ Annualised Premium Equivalent (APE). Shows how profitable each new rupee of business written actually is.</span></div>
+        <div class="gterm"><b>APE (Annualised Premium Equivalent)</b><span>A standard way insurers add up premium from different policy types (single-pay, regular-pay) on a comparable annual basis.</span></div>
+        <div class="gterm"><b>Assets Under Management (AUM)</b><span>Total investments the company manages on behalf of policyholders and shareholders — its investment "float."</span></div>
+        <div class="gterm"><b>Solvency Ratio</b><span>Available capital ÷ capital required by the regulator (IRDAI) to safely cover claims. Minimum required is 150%; higher is safer.</span></div>
+        <div class="gterm"><b>Persistency Ratio</b><span>The percentage of policyholders who keep paying premiums and don't lapse their policy — a proxy for customer satisfaction and product quality.</span></div>
+        <div class="gterm"><b>Claim Settlement Ratio</b><span>Percentage of death claims the insurer approved and paid out of all claims received — the ultimate test of whether the company honours its promise.</span></div>
+        <div class="gterm"><b>Bancassurance</b><span>Selling insurance policies through a bank's branch network — here, mainly ICICI Bank.</span></div>
+        <div class="gterm"><b>ULIP / Linked Business</b><span>A policy where part of the premium is invested in market-linked funds chosen by the customer, who bears the investment risk/reward.</span></div>
+        <div class="gterm"><b>Non-Linked / Participating Business</b><span>Traditional policies with guaranteed or bonus-linked returns; the insurer, not the customer, manages the underlying investment risk.</span></div>
+        <div class="gterm"><b>Net Worth</b><span>Shareholders' equity — paid-up capital plus reserves; the accounting "book value" of the company.</span></div>
+        <div class="gterm"><b>P/E, P/B, P/EV Ratios</b><span>Price divided by Earnings, Book Value, or Embedded Value per share respectively — how many rupees you pay today for one rupee of that metric.</span></div>
+        <div class="gterm"><b>CAGR</b><span>Compound Annual Growth Rate — the smoothed, year-over-year growth rate that gets you from a starting value to an ending value over a number of years.</span></div>
+        <div class="gterm"><b>Operating / Investing / Financing Cash Flow</b><span>The three buckets of the cash flow statement: cash from core business operations, cash used to buy/sell investments and assets, and cash from raising or repaying capital/debt.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>Sources:</b> ICICI Prudential Life Insurance Company Ltd — Annual Reports FY2022, FY2023, FY2024, FY2025 and FY2026 (standalone financial statements, Directors'/Management Discussion sections, and Embedded Value disclosures); live market price and 52-week range from NSE/BSE-linked data providers, mid-August 2026.</p>
+    <p><b>Disclaimer:</b> This dashboard is prepared for educational purposes to help a beginner investor understand the business and its financial history. It is not a research report, recommendation, or investment advice. Figures are rounded and standalone (not consolidated) unless stated. Past growth does not guarantee future performance — always verify current numbers before investing and consider consulting a SEBI-registered investment advisor.</p>
+  </footer>
+
+</div>
+
+<script>
+Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
+Chart.defaults.color = '#4B5A67';
+Chart.defaults.font.size = 11.5;
+
+const inkGreen = '#3D6B52', inkGold = '#A9792C', inkRed = '#9C4A3A', inkNavy='#1B2A38', softGold='#E6D8B8', softGreen='#CFE0D6', softRed='#E7C6BC', softBlue='#C9D6DE';
+const years = ['FY22','FY23','FY24','FY25','FY26'];
+
+// Distribution mix donut (FY2026)
+new Chart(document.getElementById('distChart'), {
+  type:'doughnut',
+  data:{labels:['Bancassurance','Agency','Direct','Partnership Distr.','Group'],
+    datasets:[{data:[29.8,25.3,18.3,13.2,13.4], backgroundColor:[inkNavy,inkGold,inkGreen,softGold,softBlue]}]},
+  options:{plugins:{legend:{position:'bottom', labels:{boxWidth:10,padding:8}}}, cutout:'55%'}
+});
+
+// Product mix donut (FY2026)
+new Chart(document.getElementById('prodChart'), {
+  type:'doughnut',
+  data:{labels:['Linked (ULIP)','Non-Linked','Annuity','Protection','Group'],
+    datasets:[{data:[48.0,20.5,17.9,7.8,5.8], backgroundColor:[inkNavy,inkGold,inkGreen,inkRed,softBlue]}]},
+  options:{plugins:{legend:{position:'bottom', labels:{boxWidth:10,padding:8}}}, cutout:'55%'}
+});
+
+// PAT & Net worth
+new Chart(document.getElementById('patChart'), {
+  data:{labels:years,
+    datasets:[
+      {type:'bar', label:'PAT (₹ Cr)', data:[754,811,852,1189,1600], backgroundColor:inkGold, order:2, yAxisID:'y'},
+      {type:'line', label:'Net Worth (₹ Cr)', data:[9163,10092,11009,11941,13631], borderColor:inkNavy, backgroundColor:inkNavy, tension:.3, order:1, yAxisID:'y1', pointRadius:4}
+    ]},
+  options:{
+    scales:{
+      y:{position:'left', title:{display:true,text:'PAT ₹ Cr'}},
+      y1:{position:'right', grid:{drawOnChartArea:false}, title:{display:true,text:'Net Worth ₹ Cr'}}
+    },
+    plugins:{legend:{position:'bottom'}}
+  }
+});
+
+// EV & VNB margin
+new Chart(document.getElementById('evChart'), {
+  data:{labels:years,
+    datasets:[
+      {type:'bar', label:'Embedded Value (₹ Bn)', data:[316.25,356.34,423.37,479.51,529.89], backgroundColor:inkGreen, yAxisID:'y'},
+      {type:'line', label:'VNB Margin (%)', data:[28.0,32.0,24.6,22.8,24.7], borderColor:inkRed, backgroundColor:inkRed, tension:.3, yAxisID:'y1', pointRadius:4}
+    ]},
+  options:{
+    scales:{
+      y:{position:'left', title:{display:true,text:'EV ₹ Bn'}},
+      y1:{position:'right', grid:{drawOnChartArea:false}, title:{display:true,text:'VNB Margin %'}, min:0, max:40}
+    },
+    plugins:{legend:{position:'bottom'}}
+  }
+});
+
+// AUM
+new Chart(document.getElementById('aumChart'), {
+  type:'bar',
+  data:{labels:years, datasets:[{label:'AUM (₹ Trillion)', data:[2.40,2.50,2.90,3.09,3.14], backgroundColor:inkNavy}]},
+  options:{plugins:{legend:{display:false}}, scales:{y:{title:{display:true,text:'₹ Trillion'}}}}
+});
+
+// EPS & DPS
+new Chart(document.getElementById('epsChart'), {
+  data:{labels:years,
+    datasets:[
+      {type:'bar', label:'EPS (₹)', data:[5.25,5.64,5.92,8.24,11.06], backgroundColor:inkGold, yAxisID:'y'},
+      {type:'bar', label:'DPS (₹)', data:[0.55,0.60,0.60,0.85,1.65], backgroundColor:inkRed, yAxisID:'y1'}
+    ]},
+  options:{
+    scales:{
+      y:{position:'left', title:{display:true,text:'EPS ₹'}},
+      y1:{position:'right', grid:{drawOnChartArea:false}, title:{display:true,text:'DPS ₹'}, max:12}
+    },
+    plugins:{legend:{position:'bottom'}}
+  }
+});
+
+// Cash flow FY25 vs FY26
+new Chart(document.getElementById('cfChart'), {
+  type:'bar',
+  data:{labels:['Operating','Investing','Financing','Net Change'],
+    datasets:[
+      {label:'FY2025', data:[-9399.62,6861.31,1422.71,-1115.60], backgroundColor:softGold},
+      {label:'FY2026', data:[-5340.66,7557.37,-170.60,2046.15], backgroundColor:inkGold}
+    ]},
+  options:{
+    plugins:{legend:{position:'bottom'}},
+    scales:{y:{title:{display:true,text:'₹ Crore'}}}
+  }
+});
+</script>
+</body>
+</html>
